@@ -1,9 +1,7 @@
 # SentinelAI – Enterprise Fraud Detection Platform
 
 **Course:** CMPE 256  
-**Submission Type:** Final Capstone Project  
 **Date:** November 29, 2025  
-**Team Name:** [Insert Your Team Name]
 
 ---
 
