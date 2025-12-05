@@ -78,3 +78,42 @@ The model was evaluated on a held-out test set. We optimized for Recall to ensur
 **Install dependencies:**
 ```bash
 pip install -r requirements.txt
+
+graph TD
+    subgraph Client_Side ["Client Side (Analyst Operations)"]
+        User(("👤 Financial Analyst"))
+        UI["💻 Streamlit Dashboard<br>(Frontend)"]
+    end
+
+    subgraph Server_Side ["Server Side (Microservices)"]
+        API["⚙️ FastAPI Gateway<br>(Backend)"]
+        
+        subgraph ML_Engine ["🧠 Hybrid AI Engine"]
+            Preprocessing("🧹 SMOTE & Scaling")
+            RF["🌲 Random Forest<br>(Supervised)"]
+            ISO["📉 Isolation Forest<br>(Unsupervised)"]
+            SHAP("🔍 SHAP Explainer<br>(XAI Module)")
+        end
+        
+        DB[("💽 SQLite Database<br>(Audit Logs)")]
+    end
+
+    %% Data Flow Connections
+    User -->|1. Simulates Txn| UI
+    UI -->|2. POST JSON Data| API
+    API -->|3. Raw Data| Preprocessing
+    Preprocessing -->|4. Features| RF
+    Preprocessing -->|4. Features| ISO
+    RF & ISO -->|5. Weighted Scores| API
+    API -->|6. Explain Request| SHAP
+    SHAP -->|7. Feature Importance| API
+    API -.->|8. Async Log| DB
+    API -->|9. JSON Response| UI
+    UI -->|10. Risk Visualization| User
+
+    %% Styling
+    style UI fill:#ff4b4b,stroke:#333,stroke-width:2px,color:white
+    style API fill:#009688,stroke:#333,stroke-width:2px,color:white
+    style DB fill:#333,stroke:#fff,stroke-width:2px,color:white
+    style RF fill:#4CAF50,stroke:#333,color:white
+    style ISO fill:#2196F3,stroke:#333,color:white
