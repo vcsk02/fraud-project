@@ -183,7 +183,7 @@ cd backend
 
 Start the FastAPI app with Uvicorn:
 
-# Replace `main:app` with your actual entrypoint if different
+Replace `main:app` with your actual entrypoint if different
 python -m uvicorn main:app --reload
 
 
