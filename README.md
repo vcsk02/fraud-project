@@ -3,6 +3,8 @@
 Course: CMPE 256
 Date: November 29, 2025
 
+Presentation Slides: https://docs.google.com/presentation/d/15GDqaYDlGO0cTmYNNetXc0v9gcvpFKbK87WW8VA8XCk/edit?usp=sharing
+
 Presentation Slides Demo: https://drive.google.com/file/d/1cOjHrlq2NWZ1k0488RXUevMEAZnr61oJ/view?usp=drive_link
 
 Product Demo: https://drive.google.com/file/d/1tfCTlHfoCQeXeqOM3rBZTkrB3MYmjvx0/view?usp=sharing
