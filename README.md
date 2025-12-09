@@ -9,6 +9,8 @@ Presentation Slides Demo: https://drive.google.com/file/d/1cOjHrlq2NWZ1k0488RXUe
 
 Product Demo: https://drive.google.com/file/d/1tfCTlHfoCQeXeqOM3rBZTkrB3MYmjvx0/view?usp=sharing
 
+Project Report: https://drive.google.com/file/d/1-w8XLzuKqCVh5mr2BjuWPz0zxdu5hbo8/view?usp=sharing
+
 ## 1. Executive Summary
 
 SentinelAI is a production-style Fraud Detection and Recommendation Engine designed to bridge the gap between traditional rule-based monitoring and modern AI-driven risk scoring.
