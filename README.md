@@ -3,6 +3,7 @@
 **Course:** CMPE 256  
 **Date:** November 29, 2025  
 
+**Presentation Demo:** https://drive.google.com/file/d/1cOjHrlq2NWZ1k0488RXUevMEAZnr61oJ/view?usp=drive_link
 ---
 
 ## 1. Executive Summary
