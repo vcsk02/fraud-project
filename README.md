@@ -3,6 +3,10 @@
 Course: CMPE 256
 Date: November 29, 2025
 
+Presentation Slides Demo: https://drive.google.com/file/d/1cOjHrlq2NWZ1k0488RXUevMEAZnr61oJ/view?usp=drive_link
+
+Product Demo: https://drive.google.com/file/d/1tfCTlHfoCQeXeqOM3rBZTkrB3MYmjvx0/view?usp=sharing
+
 ## 1. Executive Summary
 
 SentinelAI is a production-style Fraud Detection and Recommendation Engine designed to bridge the gap between traditional rule-based monitoring and modern AI-driven risk scoring.
