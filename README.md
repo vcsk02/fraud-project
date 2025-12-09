@@ -1,82 +1,313 @@
 # SentinelAI – Enterprise Fraud Detection Platform
 
-**Course:** CMPE 256  
-**Date:** November 29, 2025  
-
-**Presentation Demo:** https://drive.google.com/file/d/1cOjHrlq2NWZ1k0488RXUevMEAZnr61oJ/view?usp=drive_link
----
+Course: CMPE 256
+Date: November 29, 2025
 
 ## 1. Executive Summary
-SentinelAI is a production-grade Fraud Detection and Recommendation Engine designed to bridge the gap between traditional rule-based financial monitoring and modern AI capabilities. Unlike standard binary classifiers that simply flag transactions as "Fraud" or "Safe," SentinelAI functions as an intelligent decision-support system for financial analysts.
 
-The system utilizes a **Hybrid Ensemble Architecture** logic deployed via a decoupled **Microservices Architecture**:
-* **Supervised Learning (Random Forest):** Detects known historical fraud patterns.
-* **Unsupervised Learning (Isolation Forest):** Identifies novel anomalies and zero-day threats.
+SentinelAI is a production-style Fraud Detection and Recommendation Engine designed to bridge the gap between traditional rule-based monitoring and modern AI-driven risk scoring.
 
-Key capabilities include real-time scalability, deep explainability via SHAP, and full operational transparency through audit logging.
+Instead of a simple “Fraud / Safe” label, SentinelAI acts as an analyst copilot: it assigns a continuous risk score to each transaction, surfaces explanations, and keeps a full audit trail suitable for real banking workflows.
+
+The system uses a Hybrid Ensemble Architecture deployed via a decoupled microservices stack:
+
+Supervised Learning – Random Forest
+Learns known fraud patterns from labeled historical data.
+
+Unsupervised Learning – Isolation Forest
+Detects novel anomalies and “zero-day” behaviors in feature space.
+
+Key capabilities:
+
+Real-time risk scoring via FastAPI
+
+Interactive dashboard for fraud ops teams (Streamlit)
+
+Explainability via SHAP
+
+Persistent audit logging and telemetry
 
 ## 2. Problem Statement
-Financial fraud detection currently faces three critical challenges that SentinelAI aims to solve:
-1.  **Imbalanced Data:** Genuine fraud is rare (often < 0.2%), making standard model training difficult and leading to biased classifiers.
-2.  **Black Box Decisioning:** Complex models often fail to explain why a transaction was flagged, causing trust issues and regulatory non-compliance.
-3.  **Static Detection:** Fraud patterns evolve rapidly; systems relying solely on historical data struggle to catch emerging threats.
+
+Financial fraud detection faces three core challenges that SentinelAI targets:
+
+Extreme Class Imbalance
+Genuine fraud is rare (often < 0.2%), which makes naive classifiers biased toward “non-fraud” and unreliable in production.
+
+Black-Box Decisioning
+Complex ML models often cannot articulate why a transaction was flagged. This hurts analyst trust and fails regulatory expectations.
+
+Static Detection Rules
+Attackers adapt; systems that rely only on historical rules/signatures struggle to catch emerging patterns and coordinated fraud rings.
 
 ## 3. Technical Solution & Architecture
-SentinelAI addresses these challenges through a three-pillared technical approach.
+
+SentinelAI tackles these issues with a three-pillared design.
 
 ### 3.1 Hybrid Detection Engine
-To balance precision and recall, the system employs a weighted ensemble model:
-* **Supervised Layer:** Random Forest trained on historical labels.
-* **Unsupervised Layer:** Isolation Forest analyzes feature space for statistical outliers.
-* **Imbalance Handling:** The training pipeline integrates **SMOTE** (Synthetic Minority Over-sampling Technique) to synthetically balance class distribution before model fitting.
+
+A weighted ensemble balances precision and recall:
+
+Supervised Layer – Random Forest
+
+Trained on labeled historical data.
+
+Optimized to capture known fraud behaviors.
+
+Unsupervised Layer – Isolation Forest
+
+Operates on the same feature space.
+
+Flags statistical outliers and suspicious “unknown unknowns.”
+
+Imbalance Handling – SMOTE
+
+Uses Synthetic Minority Over-sampling Technique (SMOTE) to rebalance the training data before fitting the supervised model.
 
 ### 3.2 Microservices Architecture
-The system is engineered as a decoupled application to mimic real-world banking infrastructure:
 
-| Component | Technology | Function |
-| :--- | :--- | :--- |
-| **Backend ("The Brain")** | FastAPI | Handles data ingestion, model inference, and database interactions via async background tasks. |
-| **Frontend ("The Face")** | Streamlit | Interactive dashboard for visualizations, analyst queues, and system controls. |
-| **Persistence Layer** | SQLite | Stores transaction logs, audit trails, and model drift monitoring data. |
+The system is structured to resemble a small, real-world banking stack:
+
+Component	Technology	Role
+Backend – “Brain”	FastAPI	Ingestion, model inference, risk scoring, SHAP computation, logging
+Frontend – “Face”	Streamlit	Analyst dashboard, live scoring controls, link analysis, KPIs
+Persistence Layer	SQLite	Transaction logs, audit trails, and model/telemetry records
+
+This separation keeps the ML logic, UI, and storage clean and independently deployable.
 
 ### 3.3 Explainable AI (XAI)
-The system integrates **SHAP (Shapley Additive Explanations)**. For every flagged transaction, the API calculates the marginal contribution of each feature (e.g., Transaction Amount, Location) to the final risk score, transforming a probability into an actionable explanation.
+
+For flagged or high-risk transactions, SentinelAI computes SHAP values (Shapley Additive Explanations):
+
+Quantifies each feature’s contribution to the final risk score
+(e.g., Transaction Amount, Time of Day, Merchant Category, Device Fingerprint).
+
+Helps analysts answer:
+
+“What exactly made this look suspicious?”
+
+This turns a raw probability into an actionable narrative.
 
 ## 4. Key Features
+### A. Risk Scoring & Recommendations
 
-**A. Risk Scoring & Recommendation**
-Instead of a binary output, the system generates a Risk Score (0–100).
-* **High Risk:** Prioritized for immediate human review.
-* **Low Risk:** Auto-approved to reduce analyst load.
+Instead of a binary label, SentinelAI outputs a Risk Score from 0–100:
 
-**B. Link Analysis (Graph Theory)**
-The network visualization module identifies hidden connections between seemingly unrelated accounts, such as:
-* Multiple User IDs accessing the system from a single compromised IP.
-* Shared device identifiers across different accounts.
+High-Risk → Prioritized queue for manual review
 
-**C. Model Persistence & MLOps**
-* **Serialization:** Models saved using `joblib`.
-* **Metrics:** Automated calculation of Precision, Recall, and F1-Score after every build.
-* **Production Ready:** Designed for rapid deployment and iterative improvement.
+Medium-Risk → Optional stepped-up verification (2FA, KYC checks)
+
+Low-Risk → Auto-approved, reducing analyst workload
+
+Thresholds can be tuned by risk appetite.
+
+### B. Link Analysis (Graph-Style View)
+
+Fraud is often networked, not isolated. The dashboard’s link-analysis view highlights:
+
+Multiple user accounts sharing a single IP or device ID
+
+Repeated charge attempts across different cards with shared attributes
+
+Suspicious clusters that might indicate fraud rings or account takeovers
+
+This helps analysts move beyond row-by-row inspection into graph-level reasoning.
+
+### C. Model Persistence & MLOps Hooks
+
+Serialization with joblib for both models and preprocessing artifacts
+
+Metric computation (Precision, Recall, F1, etc.) after each training run
+
+Designed to plug into a future CI/CD or MLOps pipeline for:
+
+scheduled retraining
+
+model versioning
+
+monitoring for model drift
 
 ## 5. Experimental Results
-The model was evaluated on a held-out test set. We optimized for Recall to ensure maximum capture of fraudulent activities, while maintaining high Precision to reduce analyst fatigue.
 
-| Metric | Score | Description |
-| :--- | :--- | :--- |
-| **Precision** | 0.00% | Optimized to reduce false positives. |
-| **Recall** | 0.00% | Optimized to capture rare fraud cases. |
-| **F1-Score** | 0.00% | Harmonic mean focused on the minority class. |
+The models were evaluated on a held-out test set, with a focus on:
 
-*(Note: These metrics are placeholders. Please refer to the notebook for final finalized metrics.)*
+High Recall → minimize undetected fraud
 
-## 6. Installation & User Guide
+Reasonable Precision → avoid drowning analysts in false positives
 
+F1-Score → balance between the two
+
+ROC-AUC / PR-AUC → robust view under heavy class imbalance
+
+Full details (metrics tables, confusion matrices, and SHAP plots) are documented in:
+
+SentinelAI Project Report.pdf
+
+Any associated notebooks in the repository
+
+(The old placeholder “0.00%” metrics have been removed; always refer to the report/notebooks for the true final scores.)
+
+## 6. Installation & Running Locally
 ### 6.1 System Requirements
-* **Python:** 3.9+
-* **Core Libraries:** FastAPI, Streamlit, Scikit-learn, Pandas, SHAP, SQLAlchemy.
 
-**Install dependencies:**
-```bash
+Python: 3.9+
+
+Core Libraries (see requirements.txt):
+
+FastAPI
+
+Uvicorn
+
+Streamlit
+
+Scikit-learn
+
+Pandas / NumPy
+
+SHAP
+
+SQLAlchemy
+
+Joblib
+
+Install all dependencies with:
+
 pip install -r requirements.txt
-```
+
+### 6.2 Backend – FastAPI Service
+
+Navigate to the backend folder:
+
+cd backend
+
+
+Start the FastAPI app with Uvicorn:
+
+# Replace `main:app` with your actual entrypoint if different
+python -m uvicorn main:app --reload
+
+
+By default this serves the API at:
+
+http://127.0.0.1:8000
+
+
+Open the interactive API docs at:
+
+Swagger UI: http://127.0.0.1:8000/docs
+
+ReDoc: http://127.0.0.1:8000/redoc (if enabled)
+
+From here you can send test requests to the prediction endpoint (e.g. /score or /predict, depending on the implementation).
+
+### 6.3 Frontend – Streamlit Dashboard
+
+In a new terminal, from the project root:
+
+cd frontend
+
+
+Launch the dashboard:
+
+# Replace `app.py` with the actual Streamlit file if needed
+python -m streamlit run app.py
+
+
+Open the Streamlit URL (usually):
+
+http://localhost:8501
+
+
+You should now see the SentinelAI: Enterprise Fraud Defense Platform UI with:
+
+System Telemetry & Model Health sidebar
+
+Real-Time Transaction Scoring Engine
+
+Tabs for Live Operations, Link Analysis, Model Performance, and Audit Logs
+
+### 6.4 Quick Demo Flow
+
+A typical manual demo:
+
+Ensure backend (FastAPI) is running.
+
+Open the Streamlit dashboard in your browser.
+
+In the Real-Time Transaction Scoring Engine:
+
+Adjust Batch Size.
+
+Click Inject Live Transactions to simulate a batch.
+
+Watch the System Telemetry update:
+
+Total Transactions Analyzed
+
+Current Avg Risk Score
+
+API Status & Model Build Date
+
+Explore:
+
+Link Analysis to see suspicious clusters
+
+Model Performance to review metrics
+
+Audit Logs to inspect individual scored transactions
+
+## 7. Project Structure
+fraud-project/
+├── backend/                     # FastAPI service: models, scoring, SHAP, logging
+├── frontend/                    # Streamlit dashboard (Live Ops, Link Analysis, etc.)
+├── SentinelAI Project Report.pdf
+├── SentinelAI Fraud Detection.pptx
+├── requirements.txt
+└── README.md
+
+
+You can extend the structure section once more modules/files are finalized.
+
+## 8. Dataset
+
+This project uses a highly imbalanced financial transaction dataset with labeled fraudulent vs. legitimate transactions.
+
+High-level properties:
+
+Tabular transaction records (amount, time, derived features, etc.)
+
+Strong class imbalance (fraud << non-fraud)
+
+Preprocessed for ML training and real-time inference
+
+For full dataset details (source, preprocessing pipeline, feature list), refer to:
+
+SentinelAI Project Report.pdf
+
+Data preprocessing section of the notebooks / backend code
+
+## 9. UI Preview
+
+Steps:
+
+Create a docs/ directory.
+
+Save a PNG of the main dashboard as docs/dashboard.png.
+
+Commit the image along with this README.
+
+(When you actually paste this into your README, you can delete the “Add a screenshot…” explanatory text and just keep the image line.)
+
+## 10. Future Work
+
+Planned / possible extensions:
+
+Integrate with a real message queue or event stream (Kafka, Kinesis, etc.)
+
+Add model-drift and data-drift monitoring dashboards
+
+Implement authentication / RBAC for analyst and admin personas
+
+Deploy as containers (Docker + docker-compose / Kubernetes)
+
+Experiment with sequence models (RNNs / Transformers) for temporal fraud patterns
